@@ -22,7 +22,6 @@ export function Cart({layout, onClose, cart}) {
     <>
       <CartEmpty hidden={linesCount} onClose={onClose} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
-      <CartCheckoutActions className="checkout-actions" cartInfo={cart} checkoutUrl={cart.checkoutUrl} />
     </>
   );
 }
@@ -36,12 +35,12 @@ export function CartDetails({layout, cart}) {
   };
 
   return (
-    <div>
+    <div className={container[layout]}>
       <CartLines lines={cart?.lines} layout={layout} />
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
           <CartDiscounts discountCodes={cart.discountCodes} />
-          <CartCheckoutActions className="checkout-options" checkoutUrl={cart.checkoutUrl} />
+          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
         </CartSummary>
       )}
     </div>
@@ -118,9 +117,20 @@ function CartLines({layout = 'drawer', lines: cartLines}) {
   const scrollRef = useRef(null);
   const {y} = useScroll(scrollRef);
 
+  const className = clsx([
+    y > 0 ? 'border-t' : '',
+    layout === 'page'
+      ? 'flex-grow md:translate-y-4'
+      : 'px-6 pb-6 sm-max:pt-2 overflow-auto transition md:px-12',
+  ]);
+
   return (
-    <section ref={scrollRef} aria-labelledby="cart-contents">
-      <ul className="cart-items">
+    <section
+      ref={scrollRef}
+      aria-labelledby="cart-contents"
+      className={className}
+    >
+      <ul className="grid gap-6 md:gap-10">
         {currentLines.map((line) => (
           <CartLineItem key={line.id} line={line} />
         ))}
@@ -129,20 +139,15 @@ function CartLines({layout = 'drawer', lines: cartLines}) {
   );
 }
 
-/*
-* ==================================
-* CHECKOUT BUTTON
-* ==================================
-*/
-function CartCheckoutActions({checkoutUrl, cartInfo}) {
+function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div className="checkout-button-container">
-      <a className="checkout-button" href={checkoutUrl} target="_self">
-        <span as="span" width="full">
-            Checkout ({cartInfo.totalQuantity})
-        </span>
+    <div className="flex flex-col mt-2">
+      <a href={checkoutUrl} target="_self">
+        <Button as="span" width="full">
+          Continue to Checkout
+        </Button>
       </a>
       {/* @todo: <CartShopPayButton cart={cart} /> */}
     </div>
@@ -156,32 +161,27 @@ function CartSummary({cost, layout, children = null}) {
   };
 
   return (
-    <section className="subtotal-container">
-        <div className="wrapper">
-            <div className="subtotal">
-                <span>Subtotal</span>
-            </div>
-            <div className="amount">
-                <span>
-                {cost?.subtotalAmount?.amount ? (
-                    <Money data={cost?.subtotalAmount} />
-                ) : (
-                    '-'
-                )}
-                </span>
-            </div>
+    <section aria-labelledby="summary-heading" className={summary[layout]}>
+      <h2 id="summary-heading" className="sr-only">
+        Order summary
+      </h2>
+      <dl className="grid">
+        <div className="flex items-center justify-between font-medium">
+          <Text as="dt">Subtotal</Text>
+          <Text as="dd" data-test="subtotal">
+            {cost?.subtotalAmount?.amount ? (
+              <Money data={cost?.subtotalAmount} />
+            ) : (
+              '-'
+            )}
+          </Text>
         </div>
-      
-      {/* {children} */}
+      </dl>
+      {children}
     </section>
   );
 }
 
-/*
-* ==================================
-* LINE ITEM
-* ==================================
-*/
 function CartLineItem({line}) {
   if (!line?.id) return null;
 
@@ -190,61 +190,50 @@ function CartLineItem({line}) {
   if (typeof quantity === 'undefined' || !merchandise?.product) return null;
 
   return (
-    <li key={id} className="line-item">
+    <li key={id} className="flex gap-4">
+      <div className="flex-shrink">
+        {merchandise.image && (
+          <Image
+            width={110}
+            height={110}
+            data={merchandise.image}
+            className="object-cover object-center w-24 h-24 border rounded md:w-28 md:h-28"
+            alt={merchandise.title}
+          />
+        )}
+      </div>
 
-        <div className="item-wrapper">
+      <div className="flex justify-between flex-grow">
+        <div className="grid gap-2">
+          <Heading as="h3" size="copy">
+            {merchandise?.product?.handle ? (
+              <Link to={`/products/${merchandise.product.handle}`}>
+                {merchandise?.product?.title || ''}
+              </Link>
+            ) : (
+              <Text>{merchandise?.product?.title || ''}</Text>
+            )}
+          </Heading>
 
-            {/* IMAGE */}
-            <div className="image">
-                {merchandise.image && (
-                <Image
-                    width={110}
-                    height={110}
-                    data={merchandise.image}
-                    className="object-cover object-center w-24 h-24 md:w-28 md:h-28"
-                    alt={merchandise.title}
-                />
-                )}
+          <div className="grid pb-2">
+            {(merchandise?.selectedOptions || []).map((option) => (
+              <Text color="subtle" key={option.name}>
+                {option.name}: {option.value}
+              </Text>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex justify-start text-copy">
+              <CartLineQuantityAdjust line={line} />
             </div>
-
-            {/* VARIANT */}
-            <div className="vendor">
-                {merchandise.product.vendor}
-            </div>
-
-            {/* TITLE */}
-            <div className="title">
-                <Link to={`/products/${merchandise.product.handle}`}>
-                    {merchandise?.product?.title || ''}
-                </Link>
-            </div>
-
-            {/* QUANTITY */}
-            <div className="quantity">
-                <CartLineQuantityAdjust line={line} />
-            </div>
-
-            {/* SIZE */}
-            <div className="size">
-                {merchandise.selectedOptions[1].value}
-            </div>
-
-            {/* COLOR */}
-            <div className="color">
-                {merchandise.selectedOptions[0].value}
-            </div>
-
-            {/* EDIT */}
-            <div className="edit">
-                Edit
-            </div>
-
-            {/* REMOVE */}
-            <div className="delete">
-                <ItemRemoveButton lineIds={[id]} />
-            </div>
-
+            <ItemRemoveButton lineIds={[id]} />
+          </div>
         </div>
+        <Text>
+          <CartLinePrice line={line} as="span" />
+        </Text>
+      </div>
     </li>
   );
 }
@@ -254,23 +243,23 @@ function ItemRemoveButton({lineIds}) {
 
   return (
     <fetcher.Form action="/cart" method="post">
-      <input type="hidden" name="cartAction" value={CartAction.REMOVE_FROM_CART} />
+      <input
+        type="hidden"
+        name="cartAction"
+        value={CartAction.REMOVE_FROM_CART}
+      />
       <input type="hidden" name="linesIds" value={JSON.stringify(lineIds)} />
-
-      <button type="submit">
-        <span>Delete</span>
+      <button
+        className="flex items-center justify-center w-10 h-10 border rounded"
+        type="submit"
+      >
+        <span className="sr-only">Remove</span>
+        <IconRemove aria-hidden="true" />
       </button>
-
     </fetcher.Form>
   );
-  
 }
 
-/*
-* ==================================
-* Quantity Input
-* ==================================
-*/
 function CartLineQuantityAdjust({line}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity} = line;
@@ -282,12 +271,12 @@ function CartLineQuantityAdjust({line}) {
       <label htmlFor={`quantity-${lineId}`} className="sr-only">
         Quantity, {quantity}
       </label>
-      <div className="quantity-container">
+      <div className="flex items-center border rounded">
         <UpdateCartButton lines={[{id: lineId, quantity: prevQuantity}]}>
           <button
-            className="decrease"
             name="decrease-quantity"
             aria-label="Decrease quantity"
+            className="w-10 h-10 transition text-primary/50 hover:text-primary disabled:text-primary/10"
             value={prevQuantity}
             disabled={quantity <= 1}
           >
@@ -295,13 +284,13 @@ function CartLineQuantityAdjust({line}) {
           </button>
         </UpdateCartButton>
 
-        <div className="quantity-input" data-test="item-quantity">
+        <div className="px-2 text-center" data-test="item-quantity">
           {quantity}
         </div>
 
         <UpdateCartButton lines={[{id: lineId, quantity: nextQuantity}]}>
           <button
-            className="increase"
+            className="w-10 h-10 transition text-primary/50 hover:text-primary"
             name="increase-quantity"
             value={nextQuantity}
             aria-label="Increase quantity"
@@ -341,12 +330,6 @@ function CartLinePrice({line, priceType = 'regular', ...passthroughProps}) {
   return <Money withoutTrailingZeros {...passthroughProps} data={moneyV2} />;
 }
 
-
-/*
-* ==================================
-* EMPTY CART
-* ==================================
-*/
 export function CartEmpty({hidden = false, layout = 'drawer', onClose}) {
   const scrollRef = useRef(null);
   const {y} = useScroll(scrollRef);
@@ -363,21 +346,24 @@ export function CartEmpty({hidden = false, layout = 'drawer', onClose}) {
   };
 
   return (
-    <div className="cart empty-cart" ref={scrollRef} hidden={hidden}>
-      <section className="grid gap-6 cart-wrapper">
-
-        <div className="text-holder">
-            <Text format>
-            Your cart is empty
-            </Text>
-        </div>
-
-        <div className="underscore"></div>
-
-        <div className="button-holder">
+    <div ref={scrollRef} className={container[layout]} hidden={hidden}>
+      <section className="grid gap-6">
+        <Text format>
+          Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
+          started!
+        </Text>
+        <div>
           <Button onClick={onClose}>Continue shopping</Button>
         </div>
-
+      </section>
+      <section className="grid gap-8 pt-16">
+        <FeaturedProducts
+          count={4}
+          heading="Shop Best Sellers"
+          layout={layout}
+          onClose={onClose}
+          sortKey="BEST_SELLING"
+        />
       </section>
     </div>
   );
