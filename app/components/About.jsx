@@ -1,11 +1,25 @@
-export default function About() {
+export default function About({ title, body, page, gallery }) {
     return (
-        <section className="about page-component">
-            <div className="wrapper">
+        <div className="wrapper">
 
-                <h2>About Page</h2>
+            <div className="left">
+                <h1>{title}</h1>
 
+                <div className="about-body">
+                    <div className="wrap" dangerouslySetInnerHTML={{__html: body}} />
+                </div>
             </div>
-        </section>
+
+            <div className="right">
+                <div className="image-holder">
+                        {gallery}
+                </div>
+                <div className="image-holder">
+                    <img src="/question-mark.png" alt="" />
+                </div>
+            </div>
+
+
+        </div>
     );
 }

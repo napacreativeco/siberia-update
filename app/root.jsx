@@ -308,6 +308,12 @@ const CART_QUERY = `#graphql
                 name
                 value
               }
+              displayColor: metafield(
+                    namespace: "merch"
+                    key: "displaycolor"
+                ) {
+                    value
+              }
             }
           }
         }

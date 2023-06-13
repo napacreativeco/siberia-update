@@ -1,13 +1,19 @@
 import {json} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import {useEffect} from 'react';
 
 import {PageHeader} from '~/components';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 
+import About from '~/components/About';
+
 export const headers = routeHeaders;
 
+/*
+  Loader
+*/
 export async function loader({request, params, context}) {
   invariant(params.pageHandle, 'Missing page handle');
 
@@ -34,20 +40,41 @@ export async function loader({request, params, context}) {
   );
 }
 
+/*
+  Page
+*/
 export default function Page() {
   const {page} = useLoaderData();
 
-  return (
-    <>
-      <PageHeader heading={page.title}>
-        <div
-          dangerouslySetInnerHTML={{__html: page.body}}
-          className="prose dark:prose-invert"
-        />
-      </PageHeader>
-    </>
-  );
+  useEffect(() => {
+    console.log(page)
+  });
+
+  if (page.title === 'About') {
+
+    return (
+      <div className="about about-page">
+        <About page={page} title={page.title} gallery={page.gallery} />
+      </div>     
+    );
+
+  } else {
+
+    return (
+      <div className="default-page">
+        <PageHeader heading={page.title}>
+          <div
+            dangerouslySetInnerHTML={{__html: page.body}}
+            className="prose dark:prose-invert"
+          />
+        </PageHeader>
+      </div>
+    );
+
+  }
+  
 }
+
 
 const PAGE_QUERY = `#graphql
   query PageDetails($language: LanguageCode, $handle: String!)
@@ -59,6 +86,18 @@ const PAGE_QUERY = `#graphql
       seo {
         description
         title
+      }
+      gallery: metafield(
+          namespace: "pages"
+          key: "gallery"
+        ) {
+          value
+      },
+      featured: metafield(
+        namespace: "pages",
+        key: "featured_image"
+      ) {
+        value
       }
     }
   }

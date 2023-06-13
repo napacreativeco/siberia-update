@@ -33,6 +33,9 @@ import {routeHeaders, CACHE_SHORT} from '~/data/cache';
 
 export const headers = routeHeaders;
 
+/*
+  Loader
+*/
 export async function loader({params, request, context}) {
   const {productHandle} = params;
   invariant(productHandle, 'Missing productHandle param, check route filename');
@@ -98,70 +101,50 @@ export async function loader({params, request, context}) {
   );
 }
 
+
+/* 
+  Product Page
+*/
 export default function Product() {
   const {product, shop, recommended} = useLoaderData();
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
 
   return (
-    <>
-      <Section className="px-0 md:px-8 lg:px-12">
-        <div className="grid items-start md:gap-6 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
-          <ProductGallery
-            media={media.nodes}
-            className="w-full lg:col-span-2"
-          />
-          <div className="sticky md:-mb-nav md:top-nav md:-translate-y-nav md:h-screen md:pt-nav hiddenScroll md:overflow-y-scroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 p-6 md:mx-auto md:max-w-sm md:px-0">
-              <div className="grid gap-2">
-                <Heading as="h1" className="whitespace-normal">
-                  {title}
-                </Heading>
-                {vendor && (
-                  <Text className={'opacity-50 font-medium'}>{vendor}</Text>
-                )}
-              </div>
-              <ProductForm />
-              <div className="grid gap-4 py-4">
-                {descriptionHtml && (
-                  <ProductDetail
-                    title="Product Details"
-                    content={descriptionHtml}
-                  />
-                )}
-                {shippingPolicy?.body && (
-                  <ProductDetail
-                    title="Shipping"
-                    content={getExcerpt(shippingPolicy.body)}
-                    learnMore={`/policies/${shippingPolicy.handle}`}
-                  />
-                )}
-                {refundPolicy?.body && (
-                  <ProductDetail
-                    title="Returns"
-                    content={getExcerpt(refundPolicy.body)}
-                    learnMore={`/policies/${refundPolicy.handle}`}
-                  />
-                )}
-              </div>
-            </section>
+      <div className="single-product">
+        <div className="wrapper">
+
+          {/* GALLERY */}
+          <div className="gallery">
+            <ProductGallery media={media.nodes} className="w-full lg:col-span-2" />
           </div>
+
+          {/* INFO */}
+          <div className="info">
+            <div className="wrap">
+
+              <div className="title desktop">
+                <h1>{vendor} / {title}</h1> 
+              </div>
+
+              <ProductForm />
+
+              <div className="pagination">
+                <div>back to all</div>
+                <div>next</div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-      </Section>
-      <Suspense fallback={<Skeleton className="h-32" />}>
-        <Await
-          errorElement="There was a problem loading related products"
-          resolve={recommended}
-        >
-          {(products) => (
-            <ProductSwimlane title="Related Products" products={products} />
-          )}
-        </Await>
-      </Suspense>
-    </>
+      </div>
   );
 }
 
+/* 
+  PRODUCT FORM
+*/
 export function ProductForm() {
   const {product, analytics, storeDomain} = useLoaderData();
 
@@ -218,83 +201,101 @@ export function ProductForm() {
   };
 
   return (
-    <div className="grid gap-10">
-      <div className="grid gap-4">
+    <div className="product-form">
+      <div className="wrapper">
+
+        {/* ADD TO CART */}
+        {selectedVariant && (
+          <div className="actions-header">
+
+            <div className="price">
+              {/* PRICE */}
+              <Money
+                withoutTrailingZeros
+                data={selectedVariant?.price}
+                as="span"
+              />
+              {isOnSale && (
+                <Money
+                  withoutTrailingZeros
+                  data={selectedVariant?.compareAtPrice}
+                  as="span"
+                  className="opacity-50 strike"
+                />
+              )}
+            </div>
+
+
+            <div className="button">
+              {/* BUTTON */}
+              {isOutOfStock ? (
+                <Button variant="secondary" disabled>
+                  <Text>Sold out</Text>
+                </Button>
+              ) : (
+                <AddToCartButton
+                  lines={[
+                    {
+                      merchandiseId: selectedVariant.id,
+                      quantity: 1,
+                    },
+                  ]}
+                  variant="primary"
+                  data-test="add-to-cart"
+                  analytics={{
+                    products: [productAnalytics],
+                    totalValue: parseFloat(productAnalytics.price),
+                  }}
+                >
+                  <span>Add to Cart</span>
+                </AddToCartButton>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        <div className="title mobile">
+          <h1>{product.vendor} / {product.title}</h1> 
+        </div>
+        
+        {/* DESCRIPTION */}
+        <div className="description">
+          <h3>about</h3>
+          <div className="description-content">
+            {product.description}
+          </div>
+        </div>
+
+
+        {/* OPTIONS */}
         <ProductOptions
           options={product.options}
           searchParamsWithDefaults={searchParamsWithDefaults}
         />
-        {selectedVariant && (
-          <div className="grid items-stretch gap-4">
-            {isOutOfStock ? (
-              <Button variant="secondary" disabled>
-                <Text>Sold out</Text>
-              </Button>
-            ) : (
-              <AddToCartButton
-                lines={[
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity: 1,
-                  },
-                ]}
-                variant="primary"
-                data-test="add-to-cart"
-                analytics={{
-                  products: [productAnalytics],
-                  totalValue: parseFloat(productAnalytics.price),
-                }}
-              >
-                <Text
-                  as="span"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <span>Add to Cart</span> <span>·</span>{' '}
-                  <Money
-                    withoutTrailingZeros
-                    data={selectedVariant?.price}
-                    as="span"
-                  />
-                  {isOnSale && (
-                    <Money
-                      withoutTrailingZeros
-                      data={selectedVariant?.compareAtPrice}
-                      as="span"
-                      className="opacity-50 strike"
-                    />
-                  )}
-                </Text>
-              </AddToCartButton>
-            )}
-            {!isOutOfStock && (
-              <ShopPayButton
-                width="100%"
-                variantIds={[selectedVariant?.id]}
-                storeDomain={storeDomain}
-              />
-            )}
-          </div>
-        )}
+
       </div>
     </div>
   );
 }
 
+/*
+  PRODUCT OPTIONS
+*/
 function ProductOptions({options, searchParamsWithDefaults}) {
   const closeRef = useRef(null);
   return (
-    <>
-      {options
-        .filter((option) => option.values.length > 1)
-        .map((option) => (
-          <div
-            key={option.name}
-            className="flex flex-col flex-wrap mb-4 gap-y-2 last:mb-0"
-          >
-            <Heading as="legend" size="lead" className="min-w-[4rem]">
-              {option.name}
-            </Heading>
-            <div className="flex flex-wrap items-baseline gap-4">
+    <div className="option-container">
+      {options.filter((option) => option.values.length > 1).map((option) => (
+          <div className="option-item" key={option.name}>
+
+            <div className="title">
+              <h3>
+                {option.name}
+              </h3>
+            </div>
+
+            <div className="options">
               {/**
                * First, we render a bunch of <Link> elements for each option value.
                * When the user clicks one of these buttons, it will hit the loader
@@ -387,9 +388,10 @@ function ProductOptions({options, searchParamsWithDefaults}) {
                 </>
               )}
             </div>
+
           </div>
         ))}
-    </>
+    </div>
   );
 }
 
@@ -493,9 +495,14 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       amount
       currencyCode
     }
+    metafields(identifiers: {namespace: "merch", key: "display_color"}) {
+      namespace
+      key
+    }
     product {
       title
       handle
+      vendor
     }
   }
 `;

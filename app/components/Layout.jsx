@@ -32,8 +32,8 @@ import {useCartFetchers} from '~/hooks/useCartFetchers';
 export function Layout({children, layout}) {
 
   return (
-    <>
-
+    <div className="layout-component">
+      
       <Topbar />
 
       {/* CART MODAL */}
@@ -57,15 +57,13 @@ export function Layout({children, layout}) {
         </div>
       </div>
 
-      <div className="flex flex-col min-h-screen">
 
-        <main role="main" id="mainContent" className="flex-grow">
-          {children}
-        </main>
+      <main role="main" id="mainContent" className="flex-grow">
+        {children}
+      </main>
 
-      </div>
       
-    </>
+    </div>
   );
 }
 

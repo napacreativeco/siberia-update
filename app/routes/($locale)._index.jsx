@@ -28,6 +28,9 @@ import {routeHeaders, CACHE_SHORT} from '~/data/cache';
 
 export const headers = routeHeaders;
 
+/*
+  Loader
+*/
 export async function loader({params, context}) {
   const {language, country} = context.storefront.i18n;
 
@@ -56,11 +59,6 @@ export async function loader({params, context}) {
         HOMEPAGE_FEATURED_PRODUCTS_QUERY,
         {
           variables: {
-            /**
-             * Country and language properties are automatically injected
-             * into all queries. Passing them is unnecessary unless you
-             * want to override them from the following default:
-             */
             country,
             language,
           },
@@ -120,6 +118,7 @@ export default function Homepage() {
   useEffect(() => {
     console.log('on effect');
 
+    /* Marquee Scroll */
     window.addEventListener("scroll", () => {
 
       if (window.scrollY > 100) {
@@ -156,8 +155,6 @@ export default function Homepage() {
         display: "flex",
       });
     }, 15000);
-
-    
 
   }, []);
 
@@ -197,7 +194,9 @@ export default function Homepage() {
         )}
 
         {/* ABOUT */}
-        <About />
+        <section className="about page-component">
+          <About title="about" />
+        </section>
 
       </section>
 

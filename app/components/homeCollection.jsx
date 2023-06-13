@@ -1,7 +1,9 @@
 import {ProductCard} from '~/components';
-import ProductList from '~/components/ProductList';
 import PlusHamburger from '~/components/PlusHamburger';
-
+import GridChanger from '~/components/GridChanger';
+import { useLayoutEffect, useState } from 'react';
+import ProductListItem from '~/components/ProductListItem';
+import {Link} from "~/components/Link";
 
 const mockProducts = new Array(16).fill('');
 
@@ -11,38 +13,64 @@ export default function HomeCollection({
   count = 16,
   ...props
 }) {
+
+  const [isList, setIsList] = useState(false);
+  const gridy = "block";
+  const listy = "none";
+
+  const handleClick = () => {
+    if (isList === true ) { 
+        setIsList(false) 
+    } else { 
+        setIsList(true) 
+    }
+  }
+
   return (
     <section className="home-collection page-component shop" heading={title} {...props}>
 
+      {/* Grid Changer */}
       <div className="grid-changer">
 
         {/* Cross Hair */}
-        <div className="crosshair">
-          <img src="/crosshair.svg" alt="Grid View" />
+        <div className="crosshair" onClick={handleClick}>
+            <img src="/crosshair.svg" alt="Grid View" />
         </div>
 
         {/* Pagination */}
         <div className="pagination">
-          01-all
+            01-<Link to="/collections/all/">all</Link>
         </div>
-        
+
       </div>
 
       {/* GRID */}
-      <div className="wrapper">
-        {products.map((product) => (
-          <ProductCard
-            product={product}
-            key={product.id}
-          />
-        ))}
-      </div>
+      {isList === false &&
+        <div className="grid-view">
+          {products.map((product) => (
+            <ProductCard
+              product={product}
+              key={product.id}
+            />
+          ))}
+        </div>
+      }
 
+      {/* LIST */}
+      {isList === true &&
+      <div className="list-view">
+        <ul>
+          {products.map((product) => (
+            <ProductListItem product={product} key={product.id} />
+          ))}
+        </ul>
+      </div>
+      }
+
+      {/* PLUS MENU */}
       <div className="shop-footer">
-        {/* PLUS MENU */}
         <PlusHamburger />
       </div>
-
 
     </section>
   );

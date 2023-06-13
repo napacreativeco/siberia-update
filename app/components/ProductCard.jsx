@@ -7,6 +7,7 @@ import {getProductPlaceholder} from '~/lib/placeholders';
 
 export function ProductCard({
   product,
+  vendor,
   label,
   className,
   loading,
@@ -44,74 +45,69 @@ export function ProductCard({
 
   return (
     <div className="product-card">
-      {/* <Link
-        onClick={onClick}
-        to={`/products/${product.handle}`}
-        prefetch="intent"
-      > */}
-      <article>
-          {/* PRODUCT IMAGE */}
-          <div className="card-image aspect-[4/5] bg-primary/5">
-            {image && (
-              <Image
-                className="object-cover w-full fadeIn"
-                sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                aspectRatio="4/5"
-                data={image}
-                alt={image.altText || `Picture of ${product.title}`}
-                loading={loading}
-              />
-            )}
-
-          </div>
-
-          {/* PRODUCT INFO */}
-          <div className="product-info">
-
-
-            {/* SALES INDICATOR */}
-            <div className="sale-indicator">
-              {cardLabel ? (
-                <span>
-                  {cardLabel}
-                </span>  
-              ) : (
-                <div></div>
+      <Link onClick={onClick} to={`/products/${product.handle}`} prefetch="intent">
+        <article>
+            {/* PRODUCT IMAGE */}
+            <div className="card-image aspect-[4/5] bg-primary/5">
+              {image && (
+                <Image
+                  className="object-cover w-full fadeIn"
+                  sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
+                  aspectRatio="4/5"
+                  data={image}
+                  alt={image.altText || `Picture of ${product.title}`}
+                  loading={loading}
+                />
               )}
-            </div> 
-
-            {/* TAG */}
-            <div className="product-tag">
-              <h3>
-                {product.vendor}
-              </h3>
-            </div>    
-
-
-            {/* TITLE */}
-            <div className="product-title">
-              <h3>
-                {product.title}
-              </h3>
-            </div>  
-
-
-            {/* PRICE */}
-            <div className="price">
-              <span>
-                <Money withoutTrailingZeros data={price} />
-                {isDiscounted(price, compareAtPrice) && (
-                  <CompareAtPrice
-                    className={'opacity-50'}
-                    data={compareAtPrice}
-                  />
-                )}
-              </span>
             </div>
 
-          </div>
-      </article>
-      {/* </Link> */}
+            {/* PRODUCT INFO */}
+            <div className="product-info">
+
+              {/* SALES INDICATOR */}
+              <div className="sale-indicator">
+                {cardLabel ? (
+                  <span>
+                    {cardLabel}
+                  </span>  
+                ) : (
+                  <div></div>
+                )}
+              </div> 
+
+              {/* TAG */}
+              <div className="product-tag">
+                <h3>
+                  {product.vendor}
+                </h3>
+              </div>    
+
+
+              {/* TITLE */}
+              <div className="product-title">
+                <h3>
+                  {product.title}
+                </h3>
+              </div>  
+
+
+              {/* PRICE */}
+              <div className="price">
+                <span>
+                  <Money withoutTrailingZeros data={price} />
+                  {isDiscounted(price, compareAtPrice) && (
+                    <CompareAtPrice
+                      className={'opacity-50'}
+                      data={compareAtPrice}
+                    />
+                  )}
+                </span>
+              </div>
+
+            </div>
+        </article>
+      </Link>
+
       {quickAdd && (
 
         <AddToCartButton

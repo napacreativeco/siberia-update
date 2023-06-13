@@ -42,9 +42,11 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     title
     publishedAt
     handle
-    variants(first: 1) {
+    vendor
+    variants(first: 100) {
       nodes {
         id
+        title
         image {
           url
           altText
@@ -61,6 +63,12 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
         }
         selectedOptions {
           name
+          value
+        }
+        displayColor: metafield(
+          namespace: "merch"
+          key: "displaycolor"
+        ) {
           value
         }
         product {

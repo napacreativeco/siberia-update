@@ -11,6 +11,8 @@ import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getImageLoadingPriority} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
 import {routeHeaders, CACHE_SHORT} from '~/data/cache';
+import GridChanger from '~/components/GridChanger';
+
 
 const PAGE_BY = 8;
 
@@ -66,7 +68,8 @@ export default function AllProducts() {
   const {products} = useLoaderData();
 
   return (
-    <>
+    <section className="collection-page shop">
+      <GridChanger />
       <PageHeader heading="All Products" variant="allCollections" />
       <Section>
         <Pagination connection={products}>
@@ -97,7 +100,7 @@ export default function AllProducts() {
           }}
         </Pagination>
       </Section>
-    </>
+    </section>
   );
 }
 

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect, useEffect } from 'react';
 import {gsap} from 'gsap';
 
 export default function Topbar() {
 
     const [open, setOpen] = useState('flex');
+    const [isHome, setIsHome] = useState(true);
 
     const openMenu = () => {
 
@@ -21,12 +22,25 @@ export default function Topbar() {
     return (
         <div className="topbar">
             <div className="wrapper">
-                <div id="logo" className="logo">
-                    <span>siberia</span>
-                </div>
+
+
+                {isHome ? (
+                    // True
+                    <div id="logo" className="logo home-logo">
+                        <span>siberia</span>
+                    </div>
+                ) : (
+                    // False
+                    <div id="logo" className="logo">
+                        <span>siberia</span>
+                    </div>
+                )}
+
+
                 <div onClick={openMenu} className="hamburger">
                     <img src="/cart.png" />
                 </div>
+
             </div>
         </div>
     )
