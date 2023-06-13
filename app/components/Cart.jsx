@@ -139,7 +139,7 @@ function CartCheckoutActions({ cart }) {
 
   return (
     <div className="checkout-button-container">
-      <a className="checkout-button" href={cart.checkoutUrl} target="_self">
+      <a className="checkout-button" target="_self">
         <span>
           Checkout
         </span>
