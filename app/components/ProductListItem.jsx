@@ -1,5 +1,6 @@
-import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
 import {useEffect} from 'react';
+
+import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
 
 import {Text, Link, AddToCartButton} from '~/components';
 import {isDiscounted, isNewArrival} from '~/lib/utils';

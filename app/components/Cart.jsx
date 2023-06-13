@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import {useRef} from 'react';
+import clsx from 'clsx';
 import {useScroll} from 'react-use';
 import {flattenConnection, Image, Money} from '@shopify/hydrogen';
 import {useFetcher} from '@remix-run/react';

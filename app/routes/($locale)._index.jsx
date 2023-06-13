@@ -3,28 +3,24 @@ import {Suspense, useEffect, useRef} from 'react';
 import {Await, useLoaderData} from '@remix-run/react';
 import {AnalyticsPageType} from '@shopify/hydrogen';
 import { gsap } from "gsap";
-import { ExpoScaleEase, RoughEase, SlowMo } from "gsap/EasePack";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { Draggable } from "gsap/Draggable";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, Draggable, ExpoScaleEase, RoughEase, SlowMo);
-
-import HeroNavigation from '~/components/heroNavigation';
-import HomeCollection from '~/components/homeCollection';
-import About from '~/components/About';
-import CartModal from '~/components/CartModal';
-import SlimFooter from '~/components/SlimFooter';
-
 import Marquee from "react-fast-marquee";
-import NewsletterModal from '~/components/NewsletterModal';
-
-
-import {ProductSwimlane, FeaturedCollections, Hero} from '~/components';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
 import {seoPayload} from '~/lib/seo.server';
 import {routeHeaders, CACHE_SHORT} from '~/data/cache';
+
+import NewsletterModal from '~/components/NewsletterModal';
+import HeroNavigation from '~/components/heroNavigation';
+import HomeCollection from '~/components/homeCollection';
+import About from '~/components/About';
+import SlimFooter from '~/components/SlimFooter';
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, Draggable);
+
 
 export const headers = routeHeaders;
 
@@ -116,32 +112,30 @@ export default function Homepage() {
   const skeletons = getHeroPlaceholder([{}, {}, {}]);
 
   useEffect(() => {
-    console.log('on effect');
-
     /* Marquee Scroll */
-    window.addEventListener("scroll", () => {
+    window.addEventListener('scroll', () => {
 
       if (window.scrollY > 100) {
 
         // Hide Marquee
-        gsap.to(".marquee-container", {
+        gsap.to('.marquee-container', {
             y: 100,
             delay: 0.6,
             duration: 0.2,
             onComplete: () => {
-                gsap.to(".marquee-container", { display: "none" });
+                gsap.to('.marquee-container', { display: 'none' });
             }
         });
 
       } else {
 
         // Show Marquee
-        gsap.to(".marquee-container", {
+        gsap.to('.marquee-container', {
             y: 0,
             delay: 0.6,
             duration: 0.2,
             onComplete: () => {
-                gsap.to(".marquee-container", { display: "block" });
+                gsap.to('.marquee-container', { display: 'block' });
             }
         });
       }
@@ -151,8 +145,8 @@ export default function Homepage() {
     
     /* Newsletter Popup */
     setTimeout(function() {
-      gsap.to(".newsletter-modal", {
-        display: "flex",
+      gsap.to('.newsletter-modal', {
+        display: 'flex',
       });
     }, 15000);
 

@@ -1,5 +1,4 @@
 import { Parallax } from 'react-scroll-parallax';
-import React, { useState } from 'react';
 import {gsap} from 'gsap';
 import { ExpoScaleEase, RoughEase, SlowMo } from "gsap/EasePack";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

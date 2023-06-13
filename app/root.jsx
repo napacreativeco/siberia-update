@@ -11,20 +11,22 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import {ShopifySalesChannel, Seo} from '@shopify/hydrogen';
+import favicon from '../public/favicon.svg';
 import invariant from 'tiny-invariant';
 
-import {Layout} from '~/components';
-import {seoPayload} from '~/lib/seo.server';
-
-import favicon from '../public/favicon.svg';
-
-import {GenericError} from './components/GenericError';
-import {NotFound} from './components/NotFound';
 import styles from './styles/app.css';
 import {DEFAULT_LOCALE, parseMenu, getCartId} from './lib/utils';
+import { ParallaxProvider } from 'react-scroll-parallax';
+
+// Components
+import {GenericError} from './components/GenericError';
+import {NotFound} from './components/NotFound';
+import {Layout} from '~/components';
+
+import {seoPayload} from '~/lib/seo.server';
 import {useAnalytics} from './hooks/useAnalytics';
 
-import { ParallaxProvider } from 'react-scroll-parallax';
+
 
 
 export const links = () => {

@@ -1,9 +1,8 @@
+import { useState } from 'react';
 import {ProductCard} from '~/components';
 import PlusHamburger from '~/components/PlusHamburger';
-import GridChanger from '~/components/GridChanger';
-import { useLayoutEffect, useState } from 'react';
 import ProductListItem from '~/components/ProductListItem';
-import {Link} from "~/components/Link";
+import {Link} from '~/components/Link';
 
 const mockProducts = new Array(16).fill('');
 
@@ -15,14 +14,12 @@ export default function HomeCollection({
 }) {
 
   const [isList, setIsList] = useState(false);
-  const gridy = "block";
-  const listy = "none";
 
   const handleClick = () => {
     if (isList === true ) { 
-        setIsList(false) 
+        setIsList(false);
     } else { 
-        setIsList(true) 
+        setIsList(true);
     }
   }
 
@@ -34,7 +31,7 @@ export default function HomeCollection({
 
         {/* Cross Hair */}
         <div className="crosshair" onClick={handleClick}>
-            <img src="/crosshair.svg" alt="Grid View" />
+            <img src="/crosshair.svg" alt="Grid View"/>
         </div>
 
         {/* Pagination */}
