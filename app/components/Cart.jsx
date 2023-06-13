@@ -22,7 +22,7 @@ export function Cart({layout, onClose, cart}) {
     <>
       <CartEmpty hidden={linesCount} onClose={onClose} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
-      <CartCheckoutActions className="checkout-options" checkoutUrl={cart} />
+      <CartCheckoutActions className="checkout-options" />
     </>
   );
 }
@@ -135,7 +135,6 @@ function CartLines({layout = 'drawer', lines: cartLines}) {
   CHECKOUT ACTIONS
 */
 function CartCheckoutActions({ cart }) {
-  if (!checkoutUrl) return null;
 
   return (
     <div className="checkout-button-container">
