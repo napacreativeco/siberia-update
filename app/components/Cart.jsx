@@ -22,7 +22,7 @@ export function Cart({layout, onClose, cart}) {
     <>
       <CartEmpty hidden={linesCount} onClose={onClose} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
-      <CartCheckoutActions className="checkout-options" checkoutUrl={cart.checkoutUrl} />
+      <CartCheckoutActions className="checkout-options" checkoutUrl={cart} />
     </>
   );
 }
@@ -134,12 +134,12 @@ function CartLines({layout = 'drawer', lines: cartLines}) {
 /*
   CHECKOUT ACTIONS
 */
-function CartCheckoutActions({checkoutUrl}) {
+function CartCheckoutActions({ cart }) {
   if (!checkoutUrl) return null;
 
   return (
     <div className="checkout-button-container">
-      <a className="checkout-button" href={checkoutUrl} target="_self">
+      <a className="checkout-button" href={cart.checkoutUrl} target="_self">
         <span>
           Checkout
         </span>
