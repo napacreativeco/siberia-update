@@ -54,7 +54,8 @@ export default function Page() {
 
     return (
       <div className="about about-page">
-        <About page={page} title={page.title} gallery={page.gallery} />
+        <About page={page} title={page.title} gallery={page.gallery.value} />
+          <img src={page.featured.value} alt="" />
       </div>     
     );
 
@@ -92,12 +93,16 @@ const PAGE_QUERY = `#graphql
           key: "gallery"
         ) {
           value
+          namespace
+          key
       },
       featured: metafield(
         namespace: "pages",
         key: "featured_image"
       ) {
         value
+        namespace
+        key
       }
     }
   }

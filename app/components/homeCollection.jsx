@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {ProductCard} from '~/components';
-import PlusHamburger from '~/components/PlusHamburger';
 import ProductListItem from '~/components/ProductListItem';
 import {Link} from '~/components/Link';
 
@@ -31,7 +30,7 @@ export default function HomeCollection({
 
         {/* Cross Hair */}
         <div className="crosshair" onClick={handleClick}>
-            <img src="/crosshair.svg" alt="Grid View"/>
+            <img style={{ transform: isList ? 'rotate(90deg)' : 'rotate(0deg)' }} src="/crosshair.svg" alt="Grid View"/>
         </div>
 
         {/* Pagination */}
@@ -63,11 +62,6 @@ export default function HomeCollection({
         </ul>
       </div>
       }
-
-      {/* PLUS MENU */}
-      <div className="shop-footer">
-        <PlusHamburger />
-      </div>
 
     </section>
   );

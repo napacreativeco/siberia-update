@@ -1,4 +1,4 @@
-import {useRef, Suspense, useMemo} from 'react';
+import {useRef, Suspense, useMemo, useEffect} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
 import {defer} from '@shopify/remix-oxygen';
 import {
@@ -143,10 +143,15 @@ export default function Product() {
 }
 
 /* 
-  PRODUCT FORM
+  ~ PRODUCT FORM ~
 */
-export function ProductForm() {
-  const {product, analytics, storeDomain} = useLoaderData();
+export function ProductForm({
+  optionName,
+  optionValue,
+  children,
+  ...props
+}) {
+  const {product, analytics} = useLoaderData();
 
   const [currentSearchParams] = useSearchParams();
   const {location} = useNavigation();
@@ -157,9 +162,7 @@ export function ProductForm() {
    * request has completed.
    */
   const searchParams = useMemo(() => {
-    return location
-      ? new URLSearchParams(location.search)
-      : currentSearchParams;
+    return location ? new URLSearchParams(location.search) : currentSearchParams;
   }, [currentSearchParams, location]);
 
   const firstVariant = product.variants.nodes[0];
@@ -200,16 +203,20 @@ export function ProductForm() {
     quantity: 1,
   };
 
+  useEffect(() => {
+    console.log(selectedVariant)
+  })
+
   return (
     <div className="product-form">
       <div className="wrapper">
 
-        {/* ADD TO CART */}
+        {/* ACTIONS HEADER*/}
         {selectedVariant && (
           <div className="actions-header">
 
+            {/* PRICE */}
             <div className="price">
-              {/* PRICE */}
               <Money
                 withoutTrailingZeros
                 data={selectedVariant?.price}
@@ -225,7 +232,37 @@ export function ProductForm() {
               )}
             </div>
 
+            {/* SIZE */}
+            <div className="size-holder">
+              <details>
+                <summary>
+                    <div className="title">size</div>
+                    <div className="icon">
+                      <img src="/down-caret.svg" alt="View options" />
+                    </div>
+                </summary>
+                    
+                <div className="size-select-body">
+                  {product.options.filter((option) => option.values.length > 1).map((option) => (
+                    
+                    option.name === 'Size' ? (
+                      <ul className="list" data-type={option.name} key={option.id}>
+                        {option.values.map((value, x) => (
+                            <li className="variant-link" key={x}>
+                              <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} />  
+                            </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div></div>
+                    )
 
+                  ))}
+                </div>
+              </details>
+            </div>
+
+            {/* BUTTON */}
             <div className="button">
               {/* BUTTON */}
               {isOutOfStock ? (
@@ -255,6 +292,7 @@ export function ProductForm() {
           </div>
         )}
 
+        {/* TITLE */}
         <div className="title mobile">
           <h1>{product.vendor} / {product.title}</h1> 
         </div>
@@ -267,12 +305,104 @@ export function ProductForm() {
           </div>
         </div>
 
-
         {/* OPTIONS */}
-        <ProductOptions
-          options={product.options}
-          searchParamsWithDefaults={searchParamsWithDefaults}
-        />
+        <div className="product-details">
+
+          {/* COLOR */}
+          <div className="colors">
+            <details>
+              <summary>colors</summary>
+              <div className="details-body">
+                {product.options.filter((option) => option.values.length > 1).map((option, y) => (
+
+                  option.name === 'Color' ? (
+                    <ul className="list" data-type={option.name} key={y}>
+                      {option.values.map((value, x) => (
+                          <li className="variant-link" key={x}>
+                            <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} />  
+                          </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div></div>
+                  )
+
+                ))}
+              </div>
+            </details>
+          </div>
+          
+          {/* SIZE TABLE */}
+          <div className="size-chart">
+            <details>
+              <summary>size chart</summary>
+
+              <div className="details-body">
+
+                {/* LABELS */}
+                <div className="label-holder">
+                  <div className="label">
+                    label:
+                  </div>
+                  <div className="chest">
+                    chest:
+                  </div>
+                  <div className="waist">
+                    waist:
+                  </div>
+                  <div className="shoulder">
+                    shoulder:
+                  </div>
+                </div>
+
+                {/* DATA HOLDER */}
+                <div className="data-holder">
+
+                  {/* LABEL VALUES */}
+                  <div className="data">
+                    {product.options.filter((option) => option.values.length > 1).map((option, k) => (
+
+                      option.name === 'Size' ? (
+                        <ul className="list" data-type={option.name} key={k}>
+                          {option.values.map((value, z) => (
+                              <li key={z}>
+                                {value}  
+                              </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div key={k}></div>
+                      )
+
+                    ))}
+                  </div>
+
+                  {/* CHEST VALUES */}
+                  <div className="data chest">
+                    {selectedVariant.chestSize ? (
+                      <div>{selectedVariant.chestSize.value}</div>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                  
+                  {/* WAIST VALUES */}
+                  <div className="data">
+                    {selectedVariant.chestSize ? (
+                      <div>{selectedVariant.waistSize.value}</div>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+
+                </div>
+
+              </div>
+
+            </details>
+          </div>
+
+        </div>
 
       </div>
     </div>
@@ -287,106 +417,28 @@ function ProductOptions({options, searchParamsWithDefaults}) {
   return (
     <div className="option-container">
       {options.filter((option) => option.values.length > 1).map((option) => (
+
           <div className="option-item" key={option.name}>
 
+            {/* TITLE */}
             <div className="title">
               <h3>
                 {option.name}
               </h3>
             </div>
 
+            {/* OPTIONS */}
             <div className="options">
-              {/**
-               * First, we render a bunch of <Link> elements for each option value.
-               * When the user clicks one of these buttons, it will hit the loader
-               * to get the new data.
-               *
-               * If there are more than 7 values, we render a dropdown.
-               * Otherwise, we just render plain links.
-               */}
-              {option.values.length > 7 ? (
-                <div className="relative w-full">
-                  <Listbox>
-                    {({open}) => (
-                      <>
-                        <Listbox.Button
-                          ref={closeRef}
-                          className={clsx(
-                            'flex items-center justify-between w-full py-3 px-4 border border-primary',
-                            open
-                              ? 'rounded-b md:rounded-t md:rounded-b-none'
-                              : 'rounded',
-                          )}
-                        >
-                          <span>
-                            {searchParamsWithDefaults.get(option.name)}
-                          </span>
-                          <IconCaret direction={open ? 'up' : 'down'} />
-                        </Listbox.Button>
-                        <Listbox.Options
-                          className={clsx(
-                            'border-primary bg-contrast absolute bottom-12 z-30 grid h-48 w-full overflow-y-scroll rounded-t border px-2 py-2 transition-[max-height] duration-150 sm:bottom-auto md:rounded-b md:rounded-t-none md:border-t-0 md:border-b',
-                            open ? 'max-h-48' : 'max-h-0',
-                          )}
-                        >
-                          {option.values.map((value) => (
-                            <Listbox.Option
-                              key={`option-${option.name}-${value}`}
-                              value={value}
-                            >
-                              {({active}) => (
-                                <ProductOptionLink
-                                  optionName={option.name}
-                                  optionValue={value}
-                                  className={clsx(
-                                    'text-primary w-full p-2 transition rounded flex justify-start items-center text-left cursor-pointer',
-                                    active && 'bg-primary/10',
-                                  )}
-                                  searchParams={searchParamsWithDefaults}
-                                  onClick={() => {
-                                    if (!closeRef?.current) return;
-                                    closeRef.current.click();
-                                  }}
-                                >
-                                  {value}
-                                  {searchParamsWithDefaults.get(option.name) ===
-                                    value && (
-                                    <span className="ml-2">
-                                      <IconCheck />
-                                    </span>
-                                  )}
-                                </ProductOptionLink>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </>
-                    )}
-                  </Listbox>
-                </div>
-              ) : (
-                <>
-                  {option.values.map((value) => {
-                    const checked =
-                      searchParamsWithDefaults.get(option.name) === value;
-                    const id = `option-${option.name}-${value}`;
+              {option.values.map((value) => {
+                const checked = searchParamsWithDefaults.get(option.name) === value;
+                const id = `option-${option.name}-${value}`;
 
-                    return (
-                      <Text key={id}>
-                        <ProductOptionLink
-                          optionName={option.name}
-                          optionValue={value}
-                          searchParams={searchParamsWithDefaults}
-                          className={clsx(
-                            'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200',
-                            checked ? 'border-primary/50' : 'border-primary/0',
-                          )}
-                        />
-                      </Text>
-                    );
-                  })}
-                </>
-              )}
+                return (
+                  <Text key={id}>
+                    <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} className={checked ? 'active' : ''} />
+                  </Text>
+                );
+              })}
             </div>
 
           </div>
@@ -395,6 +447,9 @@ function ProductOptions({options, searchParamsWithDefaults}) {
   );
 }
 
+/*
+  PRODUCT OPTION LINK
+*/
 function ProductOptionLink({
   optionName,
   optionValue,
@@ -405,21 +460,12 @@ function ProductOptionLink({
   const {pathname} = useLocation();
   const isLocalePathname = /\/[a-zA-Z]{2}-[a-zA-Z]{2}\//g.test(pathname);
   // fixes internalized pathname
-  const path = isLocalePathname
-    ? `/${pathname.split('/').slice(2).join('/')}`
-    : pathname;
-
+  const path = isLocalePathname ? `/${pathname.split('/').slice(2).join('/')}` : pathname;
   const clonedSearchParams = new URLSearchParams(searchParams);
   clonedSearchParams.set(optionName, optionValue);
 
   return (
-    <Link
-      {...props}
-      preventScrollReset
-      prefetch="intent"
-      replace
-      to={`${path}?${clonedSearchParams.toString()}`}
-    >
+    <Link {...props} preventScrollReset prefetch="intent" replace to={`${path}?${clonedSearchParams.toString()}`}>
       {children ?? optionValue}
     </Link>
   );
@@ -473,6 +519,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     selectedOptions {
       name
       value
+      
     }
     image {
       id
@@ -495,9 +542,37 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       amount
       currencyCode
     }
-    metafields(identifiers: {namespace: "merch", key: "display_color"}) {
+    displayColor: metafield(
+          namespace: "merch"
+          key: "displaycolor"
+    ) {
+      value
       namespace
       key
+    }
+    chestSize: metafield(
+          namespace: "size"
+          key: "chest"
+    ) {
+        value
+        namespace
+        key
+    }
+    waistSize: metafield(
+          namespace: "size"
+          key: "waist"
+    ) {
+        value
+        namespace
+        key
+    }
+    shoulderSize: metafield(
+          namespace: "size"
+          key: "shoulder"
+    ) {
+        value
+        namespace
+        key
     }
     product {
       title

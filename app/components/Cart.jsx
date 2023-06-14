@@ -192,13 +192,7 @@ function CartLineItem({line}) {
             {/* IMAGE */}
             <div className="image">
                 {merchandise.image && (
-                <Image
-                    width={110}
-                    height={110}
-                    data={merchandise.image}
-                    className="object-cover object-center w-24 h-24 md:w-28 md:h-28"
-                    alt={merchandise.title}
-                />
+                  <Image data={merchandise.image} width={100} alt={merchandise.title} />
                 )}
             </div>
 
@@ -221,13 +215,21 @@ function CartLineItem({line}) {
 
             {/* SIZE */}
             <div className="size">
-                {merchandise.selectedOptions[1].value}
+              {merchandise.selectedOptions[1] ? (
+                <div>{merchandise.selectedOptions[1].value}</div>
+              ) : (
+                <div>--</div>
+              )}
             </div>
 
             {/* COLOR */}
             <div className="color">
+              {merchandise.displayColor ? (
                 <div className="swatch" style={{ backgroundColor: merchandise.displayColor.value }}>
                 </div>
+              ) : (
+                <div>--</div>
+              )}
             </div>
 
             {/* EDIT */}
@@ -270,12 +272,14 @@ function CartLineItem({line}) {
 
             {/* SIZE */}
             <div className="size">
-                <span className="mobile">Size: {merchandise.selectedOptions[1].value}</span>
+                {/* <span className="mobile">Size: {merchandise.selectedOptions[1].value}</span> */}
+                throws error if no size
             </div>
 
             {/* COLOR */}
             <div className="color">
-                <span className="mobile">Color: {merchandise.selectedOptions[0].value}</span>
+                {/* <span className="mobile">Color: {merchandise.selectedOptions[0].value}</span> */}
+                throws error if no color
             </div>
 
             {/* QUANTITY */}

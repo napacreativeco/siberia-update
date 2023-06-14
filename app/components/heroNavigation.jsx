@@ -11,13 +11,8 @@ export default function HeroNavigation() {
 
     const handleClick = (e) => {
         e.preventDefault();
-
-
         /*
             Show the Component
-
-            this function grabs the class of the proper component
-            by capturing the link's [data-title] attribute
         */
         const selected = e.target.getAttribute('data-title');
         const classed = document.getElementsByClassName(selected);
@@ -31,7 +26,7 @@ export default function HeroNavigation() {
             }
         });
 
-        // Show selected component
+        // Show selected component, then scroll to it
         gsap.to(classed, {
             delay: 0.2,
             display: 'block',
@@ -74,7 +69,7 @@ export default function HeroNavigation() {
             duration: 0.24,
             scrollTrigger: {
                 trigger: "#modules",
-                start: "top top",
+                start: "top bottom",
                 toggleActions: "restart none none reverse"
             }
         });

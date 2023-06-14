@@ -1,10 +1,12 @@
 import { useState, useLayoutEffect, useEffect } from 'react';
+import {Link} from '~/components';
 import {gsap} from 'gsap';
+import {useIsHomePath} from '~/lib/utils';
 
 export default function Topbar() {
 
     const [open, setOpen] = useState('flex');
-    const [isHome, setIsHome] = useState(true);
+    const isHome = useIsHomePath();
 
     const openMenu = () => {
 
@@ -23,19 +25,9 @@ export default function Topbar() {
         <div className="topbar">
             <div className="wrapper">
 
-
-                {isHome ? (
-                    // True
-                    <div id="logo" className="logo home-logo">
-                        <span>siberia</span>
-                    </div>
-                ) : (
-                    // False
-                    <div id="logo" className="logo">
-                        <span>siberia</span>
-                    </div>
-                )}
-
+                <div id="logo" className={`${isHome ? 'logo home-logo' : 'logo'}`}>
+                    <Link to="/"><span>siberia</span></Link>
+                </div>
 
                 <div onClick={openMenu} className="hamburger">
                     <img src="/cart.png" />

@@ -96,20 +96,24 @@ export async function loader({params, context}) {
   );
 }
 
+
+/*
+  Homepage
+*/
 export default function Homepage() {
 
   const app = useRef();
 
   const {
-    primaryHero,
-    secondaryHero,
-    tertiaryHero,
-    featuredCollections,
+    // primaryHero,
+    // secondaryHero,
+    // tertiaryHero,
+    // featuredCollections,
     featuredProducts,
   } = useLoaderData();
 
   // TODO: skeletons vs placeholders
-  const skeletons = getHeroPlaceholder([{}, {}, {}]);
+  // const skeletons = getHeroPlaceholder([{}, {}, {}]);
 
   useEffect(() => {
     /* Marquee Scroll */
@@ -139,10 +143,8 @@ export default function Homepage() {
             }
         });
       }
-      console.log('scrolling');
     });
 
-    
     /* Newsletter Popup */
     setTimeout(function() {
       gsap.to('.newsletter-modal', {

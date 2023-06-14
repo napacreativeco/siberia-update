@@ -2,7 +2,6 @@ import {Suspense, useEffect, useMemo} from 'react';
 
 import {useParams, Form, Await, useMatches} from '@remix-run/react';
 import {useWindowScroll} from 'react-use';
-import {Disclosure} from '@headlessui/react';
 
 import Topbar from '~/components/Topbar';
 import CreditCards from '~/components/CreditCards';
@@ -30,6 +29,7 @@ import {
 import {useIsHomePath} from '~/lib/utils';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
+import PlusHamburger from './PlusHamburger';
 
 export function Layout({children, layout}) {
 
@@ -63,6 +63,11 @@ export function Layout({children, layout}) {
       <main role="main" id="mainContent" className="flex-grow">
         {children}
       </main>
+
+      {/* PLUS MENU */}
+      <div className="shop-footer">
+        <PlusHamburger />
+      </div>
 
       
     </div>

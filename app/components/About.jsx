@@ -1,3 +1,5 @@
+import {Image} from '@shopify/hydrogen';
+
 export default function About({ title, body, page, gallery }) {
     return (
         <div className="wrapper">
@@ -12,7 +14,7 @@ export default function About({ title, body, page, gallery }) {
 
             <div className="right">
                 <div className="image-holder">
-                        {gallery}
+                    <Image data={gallery} />
                 </div>
                 <div className="image-holder">
                     <img src="/question-mark.png" alt="" />
