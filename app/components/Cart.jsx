@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import {useScroll} from 'react-use';
 import {flattenConnection, Image, Money} from '@shopify/hydrogen';
 import {useFetcher} from '@remix-run/react';
+
 import {
   Button,
   Heading,
@@ -272,14 +273,16 @@ function CartLineItem({line}) {
 
             {/* SIZE */}
             <div className="size">
-                {/* <span className="mobile">Size: {merchandise.selectedOptions[1].value}</span> */}
-                throws error if no size
+                {merchandise.selectedOptions[1] &&
+                  <span className="mobile">Size: {merchandise.selectedOptions[1].value}</span>
+                }
             </div>
 
             {/* COLOR */}
             <div className="color">
-                {/* <span className="mobile">Color: {merchandise.selectedOptions[0].value}</span> */}
-                throws error if no color
+                {merchandise.selectedOptions[0] &&
+                  <span className="mobile">Color: {merchandise.selectedOptions[0].value}</span>
+                }
             </div>
 
             {/* QUANTITY */}

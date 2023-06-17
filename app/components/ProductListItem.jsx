@@ -44,7 +44,7 @@ export default function ProductListItem({
     };
 
     useEffect(() => {
-        console.log(product)
+        /* console.log(product) */
     })
 
     return (        

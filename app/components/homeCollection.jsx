@@ -35,7 +35,7 @@ export default function HomeCollection({
 
         {/* Pagination */}
         <div className="pagination">
-            01-<Link to="/collections/all/">all</Link>
+            01 - <Link to="/collections/all/">all</Link>
         </div>
 
       </div>
@@ -54,13 +54,13 @@ export default function HomeCollection({
 
       {/* LIST */}
       {isList === true &&
-      <div className="list-view">
-        <ul>
-          {products.map((product) => (
-            <ProductListItem product={product} key={product.id} />
-          ))}
-        </ul>
-      </div>
+        <div className="list-view">
+          <ul>
+            {products.map((product) => (
+              <ProductListItem product={product} key={product.id} />
+            ))}
+          </ul>
+        </div>
       }
 
     </section>

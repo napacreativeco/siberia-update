@@ -11,9 +11,8 @@ export default function HeroNavigation() {
 
     const handleClick = (e) => {
         e.preventDefault();
-        /*
-            Show the Component
-        */
+        
+        /* Show the Component */
         const selected = e.target.getAttribute('data-title');
         const classed = document.getElementsByClassName(selected);
 
@@ -96,7 +95,7 @@ export default function HeroNavigation() {
                     <div className="wrap">
 
                         {/* Title */}
-                        <Parallax style={{ width: '100%' }} speed={-10}>
+                        <Parallax style={{ width: '100%' }} translateY={['-100px', '100px']}>
                             <div className="title">
                                 <h1>Siberia</h1>
                             </div>
@@ -104,7 +103,7 @@ export default function HeroNavigation() {
 
 
                         {/* Links */}
-                        <Parallax style={{ width: '100%' }} speed={-13}>
+                        <Parallax style={{ width: '100%' }} translateY={['-100px', '100px']}>
                             <div className="links">
                                 <ul>
                                     <li>

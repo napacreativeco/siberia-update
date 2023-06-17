@@ -11,6 +11,7 @@ import {
 import {AnalyticsPageType, Money, ShopPayButton} from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
+import {gsap} from 'gsap';  
 
 import {
   Heading,
@@ -204,8 +205,16 @@ export function ProductForm({
   };
 
   useEffect(() => {
-    console.log(selectedVariant)
-  })
+    console.log(product);
+  });
+
+  const handleClick = () => {
+    gsap.to('.variant-list', {
+      opacity: 1,
+      x: 0,
+      duration: 0.32
+    });
+  }
 
   return (
     <div className="product-form">
@@ -232,63 +241,66 @@ export function ProductForm({
               )}
             </div>
 
-            {/* SIZE */}
-            <div className="size-holder">
-              <details>
-                <summary>
-                    <div className="title">size</div>
-                    <div className="icon">
-                      <img src="/down-caret.svg" alt="View options" />
-                    </div>
-                </summary>
-                    
-                <div className="size-select-body">
-                  {product.options.filter((option) => option.values.length > 1).map((option) => (
-                    
-                    option.name === 'Size' ? (
-                      <ul className="list" data-type={option.name} key={option.id}>
-                        {option.values.map((value, x) => (
-                            <li className="variant-link" key={x}>
-                              <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} />  
-                            </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div></div>
-                    )
 
-                  ))}
-                </div>
-              </details>
-            </div>
+            {/* SIZE or EMAIL */}
+            {!isOutOfStock ? (
+              <div className="size-holder">
+                <details>
+                  <summary onClick={handleClick}>
+                      <div className="title">size</div>
+                      <div className="icon">
+                        <img src="/down-caret.svg" alt="View options" />
+                      </div>
+                  </summary>
+                      
+                  <div className="size-select-body">
+                    {product.options.filter((option) => option.values.length > 1).map((option) => (
+                      
+                      option.name === 'Size' ? (
+                        <ul className="variant-list" data-type={option.name} key={option.id}>
+                          {option.values.map((value, x) => (
+                              <li className="variant-link" key={x}>
+                                <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} />  
+                              </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div></div>
+                      )
+
+                    ))}
+                  </div>
+                </details>
+              </div>
+            ) : (
+              <div className="notify-me-later">
+                <input type="email" placeholder="email" />
+              </div>
+            )}
 
             {/* BUTTON */}
-            <div className="button">
-              {/* BUTTON */}
-              {isOutOfStock ? (
-                <Button variant="secondary" disabled>
-                  <Text>Sold out</Text>
-                </Button>
-              ) : (
-                <AddToCartButton
-                  lines={[
-                    {
-                      merchandiseId: selectedVariant.id,
-                      quantity: 1,
-                    },
-                  ]}
-                  variant="primary"
-                  data-test="add-to-cart"
-                  analytics={{
-                    products: [productAnalytics],
-                    totalValue: parseFloat(productAnalytics.price),
-                  }}
-                >
-                  <span>Add to Cart</span>
-                </AddToCartButton>
-              )}
-            </div>
-
+            {!isOutOfStock ? (
+              <div className="button">
+                  <AddToCartButton
+                    lines={[
+                      {
+                        merchandiseId: selectedVariant.id,
+                        quantity: 1,
+                      },
+                    ]}
+                    variant="primary"
+                    data-test="add-to-cart"
+                    analytics={{
+                      products: [productAnalytics],
+                      totalValue: parseFloat(productAnalytics.price),
+                    }}
+                  >
+                    <span>Add to Cart</span>
+                  </AddToCartButton>
+              </div>
+            ) : (
+              <button className="notify">SUBMIT</button>
+            )}
           </div>
         )}
 
@@ -311,9 +323,11 @@ export function ProductForm({
           {/* COLOR */}
           <div className="colors">
             <details>
+
               <summary>colors</summary>
+
               <div className="details-body">
-                {product.options.filter((option) => option.values.length > 1).map((option, y) => (
+                {product.options.map((option, y) => (
 
                   option.name === 'Color' ? (
                     <ul className="list" data-type={option.name} key={y}>
@@ -324,7 +338,7 @@ export function ProductForm({
                       ))}
                     </ul>
                   ) : (
-                    <div></div>
+                    <div style={{ display: 'none' }}></div>
                   )
 
                 ))}
@@ -379,20 +393,28 @@ export function ProductForm({
 
                   {/* CHEST VALUES */}
                   <div className="data chest">
-                    {selectedVariant.chestSize ? (
-                      <div>{selectedVariant.chestSize.value}</div>
-                    ) : (
-                      <div></div>
-                    )}
+                    chest values
+                      
+                    <ul>
+                      {product.variants.nodes.map((node) => ( 
+
+                        // if size is Small? then do for each size
+                        node.chestSize.value
+                        // node.waistSize.value
+                      
+                      ))}
+                    </ul>
+
                   </div>
                   
                   {/* WAIST VALUES */}
                   <div className="data">
-                    {selectedVariant.chestSize ? (
-                      <div>{selectedVariant.waistSize.value}</div>
-                    ) : (
-                      <div></div>
-                    )}
+                    waist size
+                  </div>
+
+                  {/* SHOULDER VALUES */}
+                  <div className="data">
+                    shoulder size
                   </div>
 
                 </div>
@@ -519,7 +541,6 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     selectedOptions {
       name
       value
-      
     }
     image {
       id
@@ -608,7 +629,7 @@ const PRODUCT_QUERY = `#graphql
           ...Media
         }
       }
-      variants(first: 1) {
+      variants(first: 50) {
         nodes {
           ...ProductVariantFragment
         }

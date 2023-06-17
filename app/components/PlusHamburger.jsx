@@ -64,8 +64,8 @@ export default function PlusHamburger() {
 
     return (
         <div className="plus-hamburger">
-            <PlusOverlay open={open} />
             <div className="wrap">
+                <PlusOverlay open={open} />
                 <span className="plus" onClick={handleClick}>
                     <img src="/cross.svg" alt="Open Filters" />
                 </span>

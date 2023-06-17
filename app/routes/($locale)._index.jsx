@@ -189,14 +189,14 @@ export default function Homepage() {
           </Suspense>
         )}
 
+        <SlimFooter />
+
         {/* ABOUT */}
         <section className="about page-component">
           <About title="about" />
         </section>
 
       </section>
-
-      <SlimFooter />
 
     </div>
   );

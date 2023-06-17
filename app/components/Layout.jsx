@@ -59,17 +59,13 @@ export function Layout({children, layout}) {
         </div>
       </div>
 
-
       <main role="main" id="mainContent" className="flex-grow">
         {children}
       </main>
 
       {/* PLUS MENU */}
-      <div className="shop-footer">
-        <PlusHamburger />
-      </div>
+      <PlusHamburger />
 
-      
     </div>
   );
 }
