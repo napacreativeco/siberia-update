@@ -399,7 +399,7 @@ export function ProductForm({
                       {product.variants.nodes.map((node) => ( 
 
                         // if size is Small? then do for each size
-                        node.chestSize.value
+                        //node.chestSize.value
                         // node.waistSize.value
                       
                       ))}
