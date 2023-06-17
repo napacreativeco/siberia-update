@@ -401,6 +401,7 @@ export function ProductForm({
                         // if size is Small? then do for each size
                         //node.chestSize.value
                         // node.waistSize.value
+                        <div></div>
                       
                       ))}
                     </ul>
