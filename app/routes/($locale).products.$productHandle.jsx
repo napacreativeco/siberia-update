@@ -111,6 +111,19 @@ export default function Product() {
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
 
+  useEffect(() => {
+    // Show Logo
+    gsap.to(".logo", {
+        opacity: 1,
+        duration: 0.24,
+        scrollTrigger: {
+          trigger: "#modules",
+          start: "top top",
+          toggleActions: "restart none none reverse"
+        }
+    });
+  })
+
   return (
       <div className="single-product">
         <div className="wrapper">
@@ -131,7 +144,9 @@ export default function Product() {
               <ProductForm />
 
               <div className="pagination">
-                <div>back to all</div>
+                <div>
+                  <Link href="/collections/all">back to all</Link>
+                </div>
                 <div>next</div>
               </div>
 
@@ -439,9 +454,9 @@ function ProductOptions({options, searchParamsWithDefaults}) {
   const closeRef = useRef(null);
   return (
     <div className="option-container">
-      {options.filter((option) => option.values.length > 1).map((option) => (
+      {options.filter((option) => option.values.length > 0).map((option, key) => (
 
-          <div className="option-item" key={option.name}>
+          <div className="option-item" key={key}>
 
             {/* TITLE */}
             <div className="title">
@@ -452,12 +467,12 @@ function ProductOptions({options, searchParamsWithDefaults}) {
 
             {/* OPTIONS */}
             <div className="options">
-              {option.values.map((value) => {
+              {option.values.map((value, key) => {
                 const checked = searchParamsWithDefaults.get(option.name) === value;
                 const id = `option-${option.name}-${value}`;
 
                 return (
-                  <Text key={id}>
+                  <Text key={key}>
                     <ProductOptionLink optionName={option.name} optionValue={value} searchParams={searchParamsWithDefaults} className={checked ? 'active' : ''} />
                   </Text>
                 );

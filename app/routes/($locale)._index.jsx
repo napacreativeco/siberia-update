@@ -157,21 +157,15 @@ export default function Homepage() {
   return (
     <div ref={app}>
 
-      {/* NAVIGATION COMPONENET */}
       <HeroNavigation className="box" />
 
-      {/* MODAL */}
       <NewsletterModal />
 
-      {/* MARQUEE */}
       <Marquee autoFill={true} className="marquee-component">
         &nbsp;Our fabric is our honor Let the Last 
       </Marquee>
 
-      {/* MODULES */}
       <section id="modules">
-
-        {/* SHOP */}
         {featuredProducts && (
           <Suspense>
             <Await resolve={featuredProducts}>
@@ -190,14 +184,12 @@ export default function Homepage() {
         )}
 
         <SlimFooter />
-
-        {/* ABOUT */}
+        
         <section className="about page-component">
           <About title="about" />
         </section>
 
       </section>
-
     </div>
   );
 }

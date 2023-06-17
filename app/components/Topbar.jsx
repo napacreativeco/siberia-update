@@ -25,8 +25,12 @@ export default function Topbar() {
         <div className="topbar">
             <div className="wrapper">
 
-                <div id="logo" className={`${isHome ? 'logo home-logo' : 'logo'}`}>
-                    <Link to="/"><span>siberia</span></Link>
+                <div id="logo" className="logo">
+                    {isHome ? (
+                        <Link className="home-logo" to="/"><span>siberia</span></Link>
+                    ) : (
+                        <Link to="/"><span>siberia</span></Link>
+                    )}
                 </div>
 
                 <div onClick={openMenu} className="hamburger">

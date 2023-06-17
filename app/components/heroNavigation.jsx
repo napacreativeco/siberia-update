@@ -52,7 +52,7 @@ export default function HeroNavigation() {
 
 
         // Show Logo
-        gsap.to(".logo", {
+        gsap.to(".home-logo", {
             opacity: 1,
             duration: 0.24,
             scrollTrigger: {
